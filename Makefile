@@ -15,7 +15,8 @@ export VASSILII_MAIL VASSILII_URL VASSILII_NAME
 
 ### app config
 
-OBJS = term.o vt100.o keymap.o
+GLUELIB=/usr/share/prc-tools/sdk/lib/m68k-palmos-coff/libPalmOSGlue.a
+OBJS = term.o vt100.o keymap.o $(GLUELIB)
 APP = vt100
 export APP
 PRC = $(APP).prc
@@ -27,18 +28,19 @@ export ICONTEXT
 DEVICE = /dev/pilot # symlink to wherever pilot is attached
 CODEVICE = /dev/copilot # symlink to /dev/ttyqe
 PORT=2000
-PALMINCS=/usr/local/m68k-palmos-coff/include/PalmOS2
+#PALMINCS=/usr/local/m68k-palmos-coff/include/PalmOS2
+PALMINCS=/usr/share/prc-tools/sdk/include
 RELEASE=1.0
 export RELEASE
 
 ### tool definitions
 
-CC = m68k-palmos-coff-gcc
+CC = m68k-palmos-gcc
 PILRC = pilrc
-OBJRES = m68k-palmos-coff-obj-res
+OBJRES = m68k-palmos-obj-res
 BUILDPRC = build-prc
-CFLAGS = -O2 -Wall -W -I$(PALMINCS)
-GDB=m68k-palmos-coff-gdb
+CFLAGS = -O2 -Wall -W -I$(PALMINCS) -DAPPID=$(APPID)
+GDB=m68k-palmos-gdb
 PILOT_XFER=pilot-xfer
 COPILOT = cd ..; xcopilot512 -double -serial
 

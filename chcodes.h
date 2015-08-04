@@ -2,3 +2,7 @@
 #define CTL(c) ((c) - 'A' + 1)
 #define CHAR_XOFF CTL('S')
 #define CHAR_XON CTL('Q')
+
+#define PREFIX_CONTROL '^'
+#define PREFIX_ESCAPE '\\'
+#define PREFIX_META '#'

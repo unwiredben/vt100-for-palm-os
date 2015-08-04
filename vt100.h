@@ -1,6 +1,11 @@
 #ifndef _VT_100_H
 #define _VT_100_H
 
+#define CREATORID 'vt1x'
+#define PACKAGE "Pilot VT100"
+/* VERSION within 0x0000 .. 0x7FFF, for PalmOS Prefs database */
+#define VERSION 0x0001
+
 #define loc_in_virtscreen(cur,y,x) (((cur)->data)+(((y)*((cur)->columns))+(x)))
 #define MAX_ANSI_ELEMENTS 16
 #define char_to_virtscreen(cur,ch) (((cur)->next_char_send)((cur),(ch)))

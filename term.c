@@ -5,11 +5,18 @@
 #define BENCHno
 #define XON_XOFF
 
+#if 0
 #include <Common.h>
 #include <System/SysAll.h>
 #include <System/SerialMgr.h>
 #include <System/SysEvtMgr.h>
 #include <UI/UIAll.h>
+#endif
+
+#include <PalmOS.h>
+#include <PalmCompatibility.h>
+#include <PalmOSGlue.h>
+#include <SerialMgrOld.h>
 
 #ifdef BENCH
 #include <System/TimeMgr.h>
@@ -55,8 +62,10 @@ static int tty_activity_resets_autooff = 1;
 
 enum { 
 	baud_1200, baud_2400, baud_4800, baud_9600, baud_19200,
+    baud_28800, baud_38400, baud_57600, baud_115200,
+    baud_230400, baud_460800,
 	BAUD_MAX };
-static int bauds[BAUD_MAX] = { 1200, 2400, 4800, 9600, 19200 };
+static UInt32 bauds[BAUD_MAX] = { 1200, 2400, 4800, 9600, 19200, 28800, 38400, 57600, 115200, 230400, 460800 };
 static int iCurBaud = baud_2400;
 static SerSettingsType serial_settings = { /* see <System/SerialMgr.h> */
 	2400,
@@ -104,6 +113,9 @@ static Boolean MainFormHandleEvent(EventPtr event);
 static void EventLoop(void);
 static int cursor_active;
 
+static void StartSerial(void);
+static void SetControlValueByRscId(FormPtr frm, Word objID, short Value);
+void std_interpret_char(struct virtscreen *, int);
 
 void RefreshRegion(int rx, int ry, int w, int h)
 {
@@ -162,7 +174,7 @@ void ScrollRegion(int top, int bottom)
     rect.topLeft.y = (top /* +1 */)*CELLHEIGHT;
 
     CursorOff();
-    WinScrollRectangle(&rect, up, CELLHEIGHT, &rect2);
+    WinScrollRectangle(&rect, winUp, CELLHEIGHT, &rect2);
     CursorOn();    
 }
 
@@ -288,7 +300,13 @@ static void StartApplication(void)
     FormPtr frm;
     VoidHand FontBH;
     BitmapPtr FontBP;
+#ifndef ALLOW_ACCESS_TO_INTERNALS_OF_BITMAPS
+    UInt16 fontwidth, fontheight, fontrowbytes;
+#endif /* no struct-banging. */
     Word error;
+    UInt16 prefsize;
+    Int16 prefver;
+    UInt32 prefval;
 
     cursor_active = 1;    
     
@@ -297,8 +315,14 @@ static void StartApplication(void)
     FontBH = DmGetResource(bitmapRsc, fontBitmap);
     FontBP = MemHandleLock(FontBH);
     
+#ifdef ALLOW_ACCESS_TO_INTERNALS_OF_BITMAPS
     FontWH = WinCreateOffscreenWindow(FontBP->width, FontBP->height,
                                       screenFormat, &error);
+#else /* no struct-banging. */
+    BmpGlueGetDimensions(FontBP, &fontwidth, &fontheight, &fontrowbytes);
+    FontWH = WinCreateOffscreenWindow(fontwidth, fontheight,
+                                      screenFormat, &error);
+#endif /* no struct-banging. */
     ErrFatalDisplayIf(error, "Error loading glyphs");
     WinSetDrawWindow(FontWH);
     WinDrawBitmap(FontBP, 0, 0);
@@ -319,6 +343,69 @@ static void StartApplication(void)
     
     SetCurrentMenu(mainMenu);
 
+/* Set program state from stored prefs. */
+    /* Baud rate */
+    prefsize = sizeof(prefval);
+    prefver = PrefGetAppPreferences(CREATORID, 1, &prefval, &prefsize, true);
+    if (prefver != noPreferenceFound) {
+      iCurBaud = prefval;
+    }
+    serial_settings.baudRate = bauds[iCurBaud];
+    /* serial flags. */
+    prefsize = sizeof(prefval);
+    prefver = PrefGetAppPreferences(CREATORID, 2, &prefval, &prefsize, true);
+    if (prefver == VERSION) {
+      serial_settings.flags = prefval;
+    }
+    /* Local echo */
+    prefsize = sizeof(prefval);
+    prefver = PrefGetAppPreferences(CREATORID, 3, &prefval, &prefsize, true);
+    if (prefver == VERSION) {
+      local_echo = prefval;
+    }
+    /* Auto-off */
+    prefsize = sizeof(prefval);
+    prefver = PrefGetAppPreferences(CREATORID, 4, &prefval, &prefsize, true);
+    if (prefver == VERSION) {
+      tty_activity_resets_autooff = prefval;
+    }
+    /* Online */
+    prefsize = sizeof(prefval);
+    prefver = PrefGetAppPreferences(CREATORID, 5, &prefval, &prefsize, true);
+    if (prefver == VERSION) {
+      if (prefval) {
+        StartSerial();
+      }
+      online = prefval;
+    }
+    SetControlValueByRscId(frm, mainOnline, online);
+    /* Screen buffer.  Crazy shit. */
+    if (online) {
+      prefsize = sizeof(curscreen);
+      prefver = PrefGetAppPreferences(CREATORID, 6, &curscreen, &prefsize, false);
+       /* Don't want this saved across hard-reset restores. */
+      if (prefver == VERSION) {
+        prefsize = curscreen.rows * curscreen.columns;
+        prefver = PrefGetAppPreferences(CREATORID, 7, curscreen.data, &prefsize, false);
+        if (prefver == VERSION) {
+          curscreen.data_off_scr = curscreen.data;
+          curscreen.next_char_send = std_interpret_char;
+          CursorOff();
+          cursor_x = curscreen.xpos;
+          cursor_y = curscreen.ypos;
+          RefreshRegion(0, 0, curscreen.columns, curscreen.rows);
+          CursorOn();
+        } else {
+          init_virtscreen(&curscreen,screen,HEIGHT,WIDTH);
+        }
+      } else {
+        init_virtscreen(&curscreen,screen,HEIGHT,WIDTH);
+      }
+    }
+    /* Keymap preferences. */
+    keymap_getprefs(CREATORID, 8);
+
+
 #ifdef BENCH
     BenchMark();    
 #endif    
@@ -329,7 +416,7 @@ static void StartApplication(void)
 #endif
 }
 
-#define SBUFSIZE (1024 * 6)
+#define SBUFSIZE (1024 * 8)
 #define SBUFSIZE_SYS SBUFSIZE+32 /* see the SerSetReceiveBuffer() docs */
 #define RECV_LOW_WATER (SBUFSIZE * 1 / 32)
 #define RECV_HIGH_WATER (SBUFSIZE * 1 / 8)
@@ -421,7 +508,17 @@ static void StartSerial(void)
         if(SerOpen(SerialRefNum, 0, bauds[iCurBaud])){
             ErrDisplay("Cannot Open Serial Lib");
         }
-		else { /* See also <System/SerialMgr.h> */
+		else { /* See also <System/SerialMgr.h> */ /* <Core/System/SerialMgrOld.h> */
+            /* Maximal theoretical speed of 1Mbit (36*12*2400?) */
+            /* 19200 bps is fastest safe speed without CTS handshaking. */
+#if 0 /* WTF is CTS handshaking? */
+            if (bauds[iCurBaud] > 19200) {
+              serial_settings.flags |= (serSettingsFlagCTSAutoM | serSettingsFlagRTSAutoM);
+              serial_settings.ctsTimeout = serDefaultCTSTimeout;
+            } else {
+              serial_settings.flags &= ~serSettingsFlagCTSAutoM;
+            }
+#endif
 			SerSetSettings(SerialRefNum, &serial_settings);                
 			ErrFatalDisplayIf(
 				SerSetReceiveBuffer(
@@ -451,9 +548,43 @@ static void StopSerial(void)
 
 static void StopApplication(void)
 { 
+    UInt16 prefsize;
+    Int16 prefver;
+    UInt32 prefval;
 #ifdef HW_CURSOR
     InsPtEnable(0);    
 #endif
+/* Store settings. */
+    prefver = VERSION;
+    prefsize = sizeof(prefval);
+
+    /* Baud rate. */
+    prefval = iCurBaud;
+    PrefSetAppPreferences(CREATORID, 1, prefver, &prefval, prefsize, true);
+    /* Serial flags. */
+    prefval = serial_settings.flags;
+    PrefSetAppPreferences(CREATORID, 2, prefver, &prefval, prefsize, true);
+    /* Local echo */
+    prefval = local_echo;
+    PrefSetAppPreferences(CREATORID, 3, prefver, &prefval, prefsize, true);
+    /* Auto-off */
+    prefval = tty_activity_resets_autooff;
+    PrefSetAppPreferences(CREATORID, 4, prefver, &prefval, prefsize, true);
+    /* Online */
+    prefval = online;
+    PrefSetAppPreferences(CREATORID, 5, prefver, &prefval, prefsize, true);
+
+    if (online) {
+      StopSerial();
+/* Save buffer. */
+      prefsize = sizeof(curscreen);
+      PrefSetAppPreferences(CREATORID, 6, prefver, &curscreen, prefsize, false);
+      prefsize = curscreen.num_bytes;
+      PrefSetAppPreferences(CREATORID, 7, prefver, curscreen.data, prefsize, false);
+    }
+    /* Keymap preferences. */
+    keymap_setprefs(CREATORID, 8);
+
         /* Release Glyph Bitmaps */
     WinDeleteWindow(FontWH, false);
 } 
@@ -526,7 +657,7 @@ static Boolean MainFormHandleEvent(EventPtr event)
 				Word idForm = (idItem & 0xff) << 8;
 					/* see the rsrc.h for the IDs conventions required here */
 				FormPtr frm = FrmInitForm(idForm);
-				ListPtr pBaudList;
+				ListPtr pBaudList = 0; /* Make gcc happy. */
 					/* init. in first switch, reused in the second */
 
 				/* We could have vectorized the form-specific init
@@ -547,12 +678,24 @@ static Boolean MainFormHandleEvent(EventPtr event)
 							tty_activity_resets_autooff);
 
 						SetControlValueByRscId(frm,
+							prefsXonXoffCheck,
+							serial_settings.flags & serSettingsFlagXonXoffM);
+
+						SetControlValueByRscId(frm,
 								prefsDataCommon | (serial_settings.flags 
 									& serSettingsFlagBitsPerCharM),
 							1);
 						SetControlValueByRscId(frm,
 								prefsStopCommon | (serial_settings.flags 
 									& serSettingsFlagStopBitsM),
+							1);
+						SetControlValueByRscId(frm,
+								prefsParityCommon | (serial_settings.flags 
+									& serSettingsFlagParityM),
+							1);
+						SetControlValueByRscId(frm,
+								prefsParityCommon | (serial_settings.flags 
+									& serSettingsFlagParityM),
 							1);
 						SetControlValueByRscId(frm,
 								prefsParityCommon | (serial_settings.flags 
@@ -571,7 +714,8 @@ static Boolean MainFormHandleEvent(EventPtr event)
 						break;
 
 					case buttonsForm:
-
+						keymap_setform(frm);
+						break;
 					default:
 				}
 
@@ -592,6 +736,11 @@ static Boolean MainFormHandleEvent(EventPtr event)
 							iCurBaud = LstGetSelection(pBaudList);
 							serial_settings.baudRate = bauds[iCurBaud];
 							serial_settings.flags &= ~SELECTABLE_SERIAL_FLAGS_MASK;
+							if (FrmGetControlValue(frm,FrmGetObjectIndex(frm, prefsXonXoffCheck))) {
+								serial_settings.flags |= serSettingsFlagXonXoffM;
+							} else {
+								serial_settings.flags &= ~serSettingsFlagXonXoffM;
+							}
 							serial_settings.flags |= (
 									FrmGetObjectId(frm,
 										FrmGetControlGroupSelection(frm, 
@@ -611,6 +760,8 @@ static Boolean MainFormHandleEvent(EventPtr event)
 							break;
 
 						case buttonsForm:
+							keymap_getform(frm);
+							break;
 
 						default:
 					}
@@ -671,7 +822,7 @@ static void EventLoop(void)
 						FrmHandleEvent(FrmGetActiveForm(), &event);
     } while (event.eType != appStopEvent);
 
-    if(online) StopSerial();
+//    if(online) StopSerial();
 }
 
 

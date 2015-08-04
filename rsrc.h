@@ -36,6 +36,7 @@
 #define prefsBaudLabel 0x1203
 #define prefsLocalEchoCheck 0x1204
 #define prefsResetAutoOffCheck 0x1205
+#define prefsXonXoffCheck 0x1206
 
 #define prefsDataLabel 0x1210
 // cf. serSettingsFlagBitsPerChar5, ..., serSettingsFlagBitsPerChar8

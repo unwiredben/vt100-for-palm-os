@@ -1,8 +1,13 @@
 /* vt100.c */
 /* vt100 engine copyright 1997, Daniel Marks */
 
+#if 0
 #include <Common.h>
 #include <System/SysAll.h>
+#endif /* 0 */
+
+#include <PalmOS.h>
+#include <PalmCompatibility.h>
 
 /*
   #include <stdio.h>
