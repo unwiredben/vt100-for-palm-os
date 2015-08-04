@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML><!-- $Id: index.html.in,v 1.8 1998/02/24 20:06:47 swetland Exp $ -->
+<HEAD>
+<TITLE>@ICONTEXT@</TITLE>
+</HEAD>
+<BODY @BODY_COLORS@>
+
+<H1><IMG SRC="icon.gif" 
+height=@ICON_GIF_HEIGHT@ width=@ICON_GIF_WIDTH@>VT100 Terminal for Pilot</H1>
+<H2>Contents</H2>
+<OL>
+	<LI><A HREF="#about">About</A><uL>
+		<LI><A HREF="#copying">Copying policies</A><UL>
+			<LI><A HREF="#why-freeware"><STRONG>Why Freeware?</STRONG></A> 
+		</UL>
+		<LI><A HREF="#credit">Credit</A>
+		<LI><A HREF="#devel">Current developers</A>
+	</uL>
+
+	<LI><A HREF="#using">Using <EM>@ICONTEXT@</EM></A><UL>
+		<LI><A HREF="#download">Download</A>
+		<LI><A HREF="#install">Installation</A>
+		<li><a href="#linux">Using <EM>@ICONTEXT@</EM>
+			as a Linux terminal</a>
+	</UL>
+
+	<LI><A HREF="#progress">Work progress</A><UL>
+		<LI><A HREF="#releases"><EM>@ICONTEXT@</EM> releases</A>
+		<LI><A HREF="#todo">To Do List</A>
+		<LI><A HREF="#changes">Change Log</A>
+	</UL>
+
+	<LI><A HREF="#snapshots"><EM>@ICONTEXT@</EM> graphics snapshots</A><UL>
+		<LI><A HREF="#font">The Font Face</A>
+		<LI><A HREF="#screen">Screen Shots</A>
+	</UL>
+</OL>
+
+<HR>
+<H2><A NAME="about">1. About</A></H2>
+<EM>@ICONTEXT@</EM> is a simple terminal emulator for the 
+<A HREF="http://palmpilot.3com.com/">3Com / USR Pilot PDA</A>.
+It uses a very small fixed-sized font (3x5 character cells) and provides
+a 40x25 character screen.  Buttons for escape (ESC) and control (CTL) allow
+the use of escape (ascii 27) and control a-z (ascii 1-27).  To use control
+characters, tap the CTL button and write a lower-case letter.  Applications
+that successfully run on <EM>@ICONTEXT@</EM> include <UL>
+	<LI><CODE>zsh</CODE>, <CODE>bash</CODE>, <CODE>tcsh</CODE> ,
+	<LI><CODE>vi</CODE>, <CODE>emacs</CODE>, <CODE>info</CODE> ,
+	<LI><CODE>lynx</CODE>, <CODE>talk</CODE>, <CODE>ircII</CODE> .
+<p>Some people have reported using ALPHA 4 successfully with a modem.
+</UL>
+
+<H3><A NAME="copying">Copying policies</A></H3>
+The software is released without any charge for the use.
+However, you must read and understand the
+<a href=LICENSE>exact terms of the use</a>!
+Share and Enjoy.
+
+<H4><A name="why-freeware"><STRONG>Why Freeware?</STRONG></A></H4>
+The Pilot software development community seems to have a leaning towards
+ShareWare as a distribution/licensing model.  <A HREF="#devel">We</A>
+personally do not plan on
+ever distributing a ShareWare pilot appliction.  
+<P>Pilot VT100 was developed using a UNIX based 
+development environment and many excellent free development tools.
+<P><A HREF="#devel">We</A> write pilot software because we
+enjoy doing so, and because it allows us to give something back to the 
+community of developers who have spent so much time on the many excellent free
+tools and pilot applications. Perhaps we're spoiled by being a part of a
+larger UNIX community where many small and large applications are available
+freely.
+
+<H3><A NAME="credit">Credit</A></H3>
+<UL>
+<LI>Dan Marks wrote the vt100 engine used in <EM>@ICONTEXT@</EM> 
+<LI>@VASSILII@ has made a bunch of much-needed changes and got
+development rolling again after many months of inactivity on 
+<A HREF="@BRIAN_URL@">Brian's</A> part
+<LI>Dale Gass's PilotTerm inspired this work -- 
+it's amazing that you can put so much data in a 3x5 character cell.
+<LI><EM>@ICONTEXT@</EM> was developed with prc-tools-0.5.0, pilrc-2.0, 
+pilot-link, and xcopilot-0.4+iang, under Linux and Solaris.
+<P>
+<A HREF="http://www.frotz.net/pilot/">Info on the unix-hosted dev tools</A>.
+</UL>
+
+<H3><A NAME="devel">Developers</A></H3>
+<OL>
+	<LI>@BRIAN@ (the <a href="#alpha1">original application</a> author,
+	worked on the application until <a href="#alpha7">Alpha 7</a>, including)
+	<LI>@VASSILII@ (joined since <a href="#alpha6">Alpha 6</a>, current
+	mantainer)
+</OL>
+
+<HR>
+<H2><A NAME="using">2. Using <EM>@ICONTEXT@</EM></A></H2>
+<H3><A NAME="download">Download <CODE>@PRC@</CODE>
+	(size @PRCSIZE@ bytes)</A></h3>
+<UL>
+	<LI>...as <A HREF="vt100.zip"><EM>vt100.zip</EM></A> (size @ZIPSIZE@ bytes)
+	<LI>...as <A HREF="@PRC@.gz"><EM>@PRC@.gz</EM></A> (size @GZIPSIZE@ bytes)
+</UL>
+<P><STRONG>Note: </STRONG>Check out the <a href="#copying">copying terms</a> 
+before you proceed.
+
+<P>You may also get the sources bundle from the
+<a href="rel/">releases repository</a>. A CVSWeb frontend will be
+established soon.
+
+<P>If you do changes to the sources, you are encouraged (but not
+obliged) to submit them back to @VASSILII@, for merging in the main
+codebase. Please consult the <A HREF="#todo">To Do List</A> if you wish
+to contribute.
+
+<H3><A NAME="install">Installation</a></h3>
+Install the PRC in the usual way. If you have any previous version of
+<EM>@ICONTEXT@</EM> installed on your PDA, it will be automatically
+overwritten.
+<H3><A NAME="linux">Using <EM>@ICONTEXT@</EM> as a Linux terminal</a></h3>
+An excerpt from <A HREF="@VASSILII_URL@">my</A> <CODE>/etc/inittab</CODE>:<pre>
+s0:B:once:/sbin/agetty 19200 pilot vt100-nam
+</pre>
+
+<P>
+(On <A HREF="@VASSILII_URL@">my</A> system <CODE>/dev/pilot</CODE> is a link to
+<CODE>/dev/cua0</CODE>,
+where the pilot cradle is actually attached. Hence the <var>s0</var>
+in the begining.) So whenever <A HREF="@VASSILII_URL@">I</A> want to
+login from the pilot, <A HREF="@VASSILII_URL@">I</A>
+run <em>@ICONTEXT@</em> on it,
+select the baudrate 19200 via the menu (<EM>Options/Comm.</EM>),
+push the <EM>line</EM> button, and then
+<A HREF="@VASSILII_URL@">I</A> do <CODE>telinit B</CODE>
+as <EM>root</EM> on the Linux box.
+
+<P>
+Then <A HREF="@VASSILII_URL@">I</a> get <A HREF="login.gif">the login
+prompt on the pilot screen</A>.
+
+<P>
+The first command <A HREF="@VASSILII_URL@">I</A> issue upon login 
+is <code>stty cols 40 rows 25</code>;
+a termcap/terminfo entry derived from <EM>vt100-nam</EM> could be used
+as well.
+
+<HR>
+<H2><A NAME="progress">3. Work progress</a></H2>
+<H3><A NAME="releases"><EM>@ICONTEXT@</EM> releases</a></H3>
+<UL>
+<LI><a name=alpha1>Alpha 1</a>: initial release
+<LI>Alpha 2: scrolling bugfix, cursor refresh fix
+<LI>Alpha 3: okay. scrolling is much happier.
+<LI>Alpha 4: ctl/esc conflict bug fixed.  baud rate is settable.
+<LI>Alpha 5: Sends ASCII 13 for CR, fixes some glitching where < 0x20
+<LI><a name=alpha6>Alpha 6</a>: Tons of changes, thanks to @VASSILII@:
+<UL>
+<LI>'U' is now more distinguishable from 'V'
+<LI>Comms dialog added, better parameter control
+<LI>4kb serial buffer elimates most overrun problems at higher speeds
+<LI>Buttons dialog added, but doesn't do anything yet.  Hard buttons are
+now hard-coded as: <DL compact>
+	<DT>hard1 (<EM>Date Book</EM>)</DT><DD><EM>ctrl</EM>+C</DD>
+	<DT>hard2 (<EM>Address</EM>)</DT><DD><EM>left</EM></DD>
+	<DT>PgUp</DT><DD><EM>up</EM></DD>
+	<DT>PgDn</DT><DD><EM>down</EM></DD>
+	<DT>hard3 (<EM>To Do List</EM>)</DT><DD><EM>right</EM></DD>
+	<DT>hard4 (<EM>Memo Pad</EM>)</DT><DD><EM>enter</EM></DD>
+	<DT><EM>HotSync</EM></DT><DD><EM>ctrl</EM>+L</DD>
+</DL>
+</ul>
+<LI><a name=alpha7>Alpha 7</a>: <UL>
+	<LI>software flow control implemented, making connection at
+		19200 baud usable
+	<LI>Added an option (default) to reset the inactivity timer on tty
+	I/O, useful for using pilot for a log scroll watching
+	<LI>The CTL button is now a toggle (double CTL==none); when active,
+	the button remains selected
+</UL>
+<LI>Alpha 8:<UL>
+	<LI>META button added
+	<LI>GRAFFITISTATEINDICATOR added to the main form, added graffiti
+	help inteface
+	<LI>Sending a 300ms serial break signal is now possible via a BRK
+	button
+	<LI>The former "OnLine" checkbox replaced with a smaller button
+	"line"
+	<LI>The controls at the bottom of the main form shrinked so that an
+	extra (25th) line is now available!
+</UL>
+<LI>1.0:<UL>
+	<LI>Packaging, version numbers, and addresses update
+	<LI>Released after 1 year of beta-testing by thousands of users
+</UL>
+</UL>
+
+<H3><A NAME="todo">To Do List</A></H3>
+You can read <A HREF="ToDo.html">the list of features</A>
+that <A HREF="#devel">we</A> consider worth implementing somewhen
+in the future. <STRONG>Please </STRONG> consult <A HREF="ToDo.html">it</A> 
+before submitting a feature request.
+
+<H3><A NAME="changes">Changes Log</A></H3>
+In case you care, here's <A HREF="ChangeLog.html">the log
+of the changes</A> made to the application, these Web pages 
+and the development environment (since <A HREF="#devel">we</A>
+started to bother to log these changes).
+
+<HR>
+<h2><A name="snapshots">4. <EM>@ICONTEXT@</EM> Graphics Snapshots</A></h2>
+<H3><A NAME="font">The 3x5 Font:</A></H3>
+<P><IMG SRC="zoom.font.gif"
+height=@ZOOM_FONT_GIF_HEIGHT@ width=@ZOOM_FONT_GIF_WIDTH@><BR>enlarged 
+(@ZOOMFACTOR@x)
+<P>and
+<P><IMG SRC="font.gif"
+height=@FONT_GIF_HEIGHT@ width=@FONT_GIF_WIDTH@><BR>
+actual size.
+
+<H3><A NAME="screen">Screen Snapshots</a></h3>
+These are screen grabs from xcopilot-0.4, blown up 2 times the size 
+of an actual pilot screen.
+<UL>
+	<LI><A HREF="about.gif">The about screen</A>
+	<LI><A HREF="login.gif">Login prompt</A>, connected
+	to a PC running Linux
+	<LI><A HREF="emacs.gif">Emacs 19.34.1</A>, editing the
+	<EM>@ICONTEXT@</EM> source
+	<LI><A HREF="vi.gif">VIM - Vi IMproved 5.0p ALPHA </A>, editing the
+	<EM>@ICONTEXT@</EM> source
+</UL>
+
+<BR>
+
+<HR>
+Contact <A HREF="#devel">the developers</A>:
+<ADDRESS><A HREF="mailto:@BRIAN_MAIL@">@BRIAN_MAIL@</A>,
+ <A HREF="mailto:@VASSILII_MAIL@">@VASSILII_MAIL@</A>.
+</ADDRESS>
+
+</BODY>
+</HTML><!--
+vim:ts=4:sw=4:wm=8:mp=sh\ -c\ \\"nsgmls\ -s\ 2>&1\ %\\":efm=%m\:%f\:%l\:%c\:%m
+-->

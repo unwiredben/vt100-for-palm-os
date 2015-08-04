@@ -1,0 +1,4 @@
+#!/bin/sh
+import -crop 160x160+32+33 ppm:- |\
+	pnmenlarge 2 |\
+		convert -interlace Line -transparency white - gif:-

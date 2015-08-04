@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML><!-- $Id: ChangeLog.html.in,v 1.5 1998/02/21 20:09:29 vassilii Exp $ -->
+<HEAD>
+<TITLE>@ICONTEXT@: Changes Log</TITLE>
+</HEAD>
+<BODY @BODY_COLORS@>
+<h1><a href="index.html">@ICONTEXT@</a></h1>
+<h2>Pilot VT100: Changes Log</h2>
+<pre>
+Fri Aug 13 17:38:41 IDT 1999	@VASSILII@
+	* @BRIAN@ lost his CVS repository during host relocation, so the
+	older sources are not available
+	* Releasing 1.0. Updating the pictures and linking the sources
+	tarball into the index page. CVSWeb TBD
+
+[most recent changes not logged until the CVS repository access is fixed]
+
+Sat Feb 21 21:45:34 IST 1998	@VASSILII@
+	* Makefile:
+		Added $(RSC) to `clean' -- it's now rebuilt from $(RSC).in
+		Added RELEASE macro
+	* docs/Makefile:
+		Added RELEASE macro
+	* ToDo.html.in, ChangeLog.html.in, index.html.in:
+		(not to be confused with their newer counterparts in docs/)
+		-- removed
+	* term.c:
+		ModifierToggle_Ctl() added
+		The CTL button is now a toggle (double CTL==none); when active,
+		the button remains selected
+	* vt100.rsc.in:
+		The version resource promoted to 0.0.7
+		The release label is now set up by the makefile using 
+			the RELEASE macro
+
+Sat Jan 17 01:17:28 IST 1998	@VASSILII@
+	* Makefile, docs/Makefile:
+		moved the "Significant us" non-html-specific macros to the
+		parent makefile, exports adjusted
+	* vt100.rsc: removed. It is now built from vt100.rsc.in
+	* vt100.rsc.in: added, based on the old (static) vt100.rsc.
+	* Makefile: added the `$(RSC): $(RSC).in' rule
+
+Fri Jan 16 18:48:38 IST 1998	@VASSILII@
+	* docs/Makefile: added BODY_COLORS macro
+	* docs/index.html.in, docs/ToDo.html.in, docs/ChangeLog.html.in:
+	now using the BODY_COLORS instead of explicitly using the coloring
+	attrs in &lt;BODY&gt;
+	* docs/index.html.in: not using &lt;TABLE&gt; any more -- nice
+	rendering on most graphics-capable user-agents now sacrificed to
+	incremental rendering
+	* chcodes.h: added
+	* keymap.c: removed the CTL() macro def. -- it's now in chcodes.h
+	* term.c
+		RecvSerial(): added software flow control code,
+			controlled by the XON_XOFF define.
+			No more buffer overruns at 19200 baud.
+	* Makefile: added dependencies on chcodes.h
+
+Thu Jan  8 03:27:42 IST 1998	@VASSILII@
+	* fixed some problems that occured when splitting the Makefile into two
+	* docs/Makefile, docs/index.html.in: added bzip2 distribution of the app.
+	* rsrc.h, vt100.rsc: added prefsResetAutoOffCheck
+	* term.c: added global tty_activity_resets_autooff,
+	MainFormHandleEvent(): linked it to the prefsResetAutoOffCheck checkbox
+	RecvSerial(): removed the old (disbled by #ifdefs) code
+		(we can always restore it from the CVS repository now);
+		added conditional call to EvtResetAutoOffTimer()
+
+Mon Jan  5 13:59:57 CST 1998    @BRIAN@
+	* Added docs directory and moved html docs into there.
+	* Stored static images as .gif's to reduce size 
+	* added white background to web pages
+	* failed to fix the blurring problem with convert
+
+Sat Jan  3 17:06:26 IST 1998	@VASSILII@
+	* Makefile, index.html.in: now using IMG HEIGHT/WIDTH attributes
+	for all the three inline images, values for those are
+	dynamically substituted in the Makefile,
+	in the `$(HTML)/%: %.in' rule.
+	Names of the new HTML macros:
+		ICON_GIF_WIDTH
+		ICON_GIF_HEIGHT
+		FONT_GIF_WIDTH
+		FONT_GIF_HEIGHT
+		ZOOM_FONT_GIF_WIDTH
+		ZOOM_FONT_GIF_HEIGHT
+
+Fri Jan  2 22:33:31 IST 1998	@VASSILII@
+	* ChangeLog.html.in, ToDo.html.in: instead of old ChangeLog, ToDo
+	* index.html.in: linked in the changelog/todo; removed "requests"
+	(merged them with ToDo). Added the Installation and Linux
+	subsections in Usage.
+	Removed inlined snapshot of alpha 5 (demo2.gif). Instead linked in
+	external new snapshots.
+	* about.ppm emacs.ppm login.ppm vi.ppm: new snapshots.
+
+Fri Jan  2 01:32:01 IST 1998	@VASSILII@
+	* Makefile: added $(CONVERT)
+	* index.html.in: made it a first-class SGML document,
+	doctype html 3.2; added as comment vim-modeline to
+	set the external make program to nsgmls for interactive
+	validation -- see www.jclark.com. Debugged the html markup.
+
+Wed Dec 31 20:36:36 IST 1997	@VASSILII@
+	* Makefile: THISDIR renamed to thisdir and changed to immediate.
+	Its definition now uses shell variable $PWD instead of relying on
+	make macro $(PWD), which proved to be absent on gnuwin32.
+
+Wed Dec 31 08:47:49 IST 1997	@VASSILII@
+	* Makefile, index.html.in:
+	Major improvement in the web page. Contents added,
+	items reordered, text made less Brian-specific.
+	Added macros to the html template expansion rule:
+	BRIAN_MAIL, BRIAN_URL, BRIAN,
+	VASSILII_MAIL, VASSILII_URL, VASSILII,
+	(XXX need to integrate that into the about form resource)
+	ICONTEXT, GZIPSIZE (and a .prc.gzip added to the download options!).
+
+Wed Dec 31 07:10:43 IST 1997	@VASSILII@
+	* term.c, keymap.c:
+	Changed C++-style comments (//) to C-style (/* ... */).
+
+Tue Dec 30 20:05:31 IST 1997	@VASSILII@
+	* Makefile: The associated web stuff integrated into the bundle.
+	See the `web' target and associates.
+	It is now possible to specify the html in a .in template,
+	on which a sort of macro processing is going to be built.
+	(Currently: ZOOMFACTOR, ZIPSIZE, PRCSIZE).
+
+	* font.bmp, icon.bmp: converted to PBM
+	All the asssociated gifs for the Web are now updated automatically.
+
+	* vt100.rsc: now using PBMs instead of BMPs
+
+	* font.xbm: removed
+
+Sun Dec 29	@BRIAN@
+	* vt100.rsc: added '98 to copyright line.  Added Vassilii to
+	about dialog.  Minor cosmetic twiddling done to some dialogs.
+	<A HREF="index.html#alpha6">Alpha 6</A> released.
+
+Sun Dec 28 19:25:02 IST 1997	@VASSILII@
+	* ChangeLog started
+
+	* ToDo started
+
+	* font.bmp: 'U' made more distinguished from 'V' (added 1 pixel
+	at the lower-right corner)
+
+	* Makefile: added maintenance targets: debug, install, coinstall,
+	codebug, gzip, tar.
+	Added macros COPILOT, CODEVICE, GDB and PILOT_XFER.
+	Redundant '-lm' removed from the link rule.
+	Various explicit dependancies added.
+	The compilation rule now uses -W and -Wall.
+
+	* rsrc.h: for code optimizations, different hacks upon
+	the resource id-s convention were adopted. See for details
+	the comments in rsrc.h and vt100.rsc.
+	Also, the overall style changed from absolute-positioning to
+	relative positioning where possible (I do not have any
+	visual tools for creating the resource scripts).
+
+	* vt100.rsc: Added buttonsForm (currently defunct) with a help attached,
+	added prefsForm, removed baud selection from the main form (it is now
+	on prefsForm). COMPRESS used for the bitmap (needs at least pilrc1.7),
+	current version today is 2.0).
+
+	* term.c:
+	#include "keymap.h" to interface the new module `keymap.c' (see below).
+	Different initializations moved to the static initializers out
+	of StartApplication(): as of prc-tools-0.5.0 
+	the static init. bugs are fixed.
+
+	StartApplication(): FontBH made VoidHand instead of Handle,
+	this eliminated a compilation warning.
+
+	Introduced global static: local_echo iCurBaud serial_settings.
+	Removed SerialBaud.
+	Introduced enum for readable indexing of the static global bauds[].
+	The file is highly dependant upon the values of some resource IDs.
+	Some checks at preprocessor level are tried to be performed to verify
+	the IDs values consistency. It all could have been eliminated had
+	pilrc had an ability to get arith. expr-s instead of the IDs,
+	(probably requiring a C++ preprocessor pass on rsc).
+
+	StartSerial(), StopSerial(), RecvSerial(): application-specific
+	custom receive buffer is set up when going online. The buffer
+	is currently 4kB (default is 512B). RecvSerial() currently
+	gives a fatal alert on the buffer overrun (the buffer size does not
+	influence the PRC size, so increasing again won't be a big problem
+	for the total app size. I have had no problems on 19200 with it so far.
+	Still software flow control is desirable to prevent the overflow situation.
+
+	MainFormHandleEvent(): several variables moved to the blocks that actually
+	need them. Removed popSelectEvent handling as the bauds popup is now
+	removed from the form. Added actual code to the menuEvent handler instead
+	of the old stub that just popped out the about form regardless of
+	the actual menu item selected. This code highly uses the ID values
+	hacks (extracting bits from them and passing them as
+	serial_settings.flags etc.).
+
+	EventLoop(): keymap_RemapEvent is now trying to be done before
+	other routines get chance of the event processing. See also
+	keymap.c.
+
+	VirtualKeyPress(): added here to eliminate frequently used 
+	within MainFormHandleEvent() idiom and to provide a hook for
+	the keymap.c module.
+
+	* vt100.h: added VirtualKeyPress()
+
+	* keymap.h, keymap.c: module that deals with the hardware buttons
+	remapping. Currently it's impossible to change the built-in map.
+</pre>
+
+<HR>
+Contact <A HREF="index.html#devel">the developers</A>:
+
+<ADDRESS><A HREF="mailto:@BRIAN_MAIL@">@BRIAN_MAIL@</A>,
+ <A HREF="mailto:@VASSILII_MAIL@">@VASSILII_MAIL@</A>.
+</ADDRESS>
+</BODY>
+</HTML><!--
+vim:ts=4:sw=4:wm=8:mp=sh\ -c\ \\"nsgmls\ -s\ 2>&1\ %\\":efm=%m\:%f\:%l\:%c\:%m
+-->

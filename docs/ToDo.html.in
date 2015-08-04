@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML><!-- $Id: ToDo.html.in,v 1.3 1998/02/21 20:09:31 vassilii Exp $ -->
+<HEAD>
+<TITLE>@ICONTEXT@: To Do List</TITLE>
+</HEAD>
+<BODY @BODY_COLORS@>
+<h1><a href="index.html">@ICONTEXT@</a></h1>
+<h2>To Do List</h2>
+Mark the sources with `<CODE>XXX</CODE>' for hacks/doubts/to-dos etc.
+This is a brief index of part of these (and more).
+
+<ul>
+
+<li>Is there a need in using the app. w/o the software flow control?
+If yes, add an option to select
+flow control type from the comm. prefs form.
+
+<li> keymap support -- tie the form and the keymap module.
+What could be a convenient way to represent ctrl chars?
+How about changing the length accordingly? Maybe support
+dynamic alloc. of the keymap strings (this will make things
+complex when we come to implementing preferences DB).
+
+<li> do implement preferences DB
+
+<li> pilrc 1.9 and higher AUTOID should probably be used.
+
+<li> Check the problem with StopSerial() restoring the default recv. buf.
+
+<li> There are numerous XXX marks in vt100.c <A
+HREF="@VASSILII_URL@">I</A> do not understand.
+BTW, maybe we should provide another set of options similar
+to the VT100 setup screen (other than communications -- this has
+already been done in the comm. prefs. form): to change control chars semantics,
+wrapping behaviour, reverse wrapping, bell options etc.
+
+<li> Support upper half of the font. (Any volunteers
+to create a complete font?)
+
+<li> xterm-like mouseclick support
+
+<li> Dialer support 
+(<A HREF="@BRIAN_URL@">I</A> figured entering AT commands by hand was good
+enough for an early alpha...)
+<LI>Selection / Cut'n'Paste
+<LI>Attributes - underline / reverse (bold isn't very likely)
+<LI>Panning (virtual display) for 80x24 support
+<LI>Scrollback buffer
+<LI>Tab / Return buttons or keymaps <B>(12/29 started)</B>
+</ul>
+
+<HR>
+Contact <A HREF="index.html#devel">the developers</A>:
+
+<ADDRESS><A HREF="mailto:@BRIAN_MAIL@">@BRIAN_MAIL@</A>,
+ <A HREF="mailto:@VASSILII_MAIL@">@VASSILII_MAIL@</A>.
+</ADDRESS>
+</BODY>
+</HTML><!--
+vim:ts=4:sw=4:wm=8:mp=sh\ -c\ \\"nsgmls\ -s\ 2>&1\ %\\":efm=%m\:%f\:%l\:%c\:%m
+-->

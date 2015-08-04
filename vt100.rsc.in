@@ -1,0 +1,138 @@
+#include "rsrc.h"
+
+// XXX see comments in rsrc.h on IDs selection
+// XXX !!! To add: an interface to manipulate 
+
+FORM mainForm 0 0 160 160
+NOFRAME
+MENUID mainMenu
+BEGIN
+	BUTTON "line" ID mainOnline AT ( 1 151 18 8 ) USABLE FONT 0
+	BUTTON "BRK" ID mainBRK AT ( PREVRIGHT+3 PREVTOP 20 PREVHEIGHT ) USABLE FONT 0
+
+	BUTTON "ctrl" ID mainCTL AT ( 94 PREVTOP 18 PREVHEIGHT ) USABLE FONT 0
+	BUTTON "ç" ID mainMETA AT ( PREVRIGHT+3 PREVTOP 15 PREVHEIGHT ) USABLE FONT 0
+	BUTTON "Esc" ID mainESC AT ( PREVRIGHT+3 PREVTOP 17 PREVHEIGHT ) USABLE FONT 0
+	GRAFFITISTATEINDICATOR AT ( PREVRIGHT+2 PREVTOP-1 )
+END
+
+FORM buttonsForm 2 2 156 156
+HELPID hlpButtons
+MODAL
+BEGIN
+	TITLE "vt100: buttons mapping"
+
+	FIELD ID buttonsDatebookCodeField AT (80 20 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "Date Book:" ID buttonsDatebookLabel AT (PREVLEFT-60 PREVTOP) FONT 1
+
+	FIELD ID buttonsAddressCodeField AT (80 PREVBOTTOM 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "Address:" ID buttonsAddressLabel AT (PREVLEFT-48 PREVTOP) FONT 1
+
+	FIELD ID buttonsToDoListCodeField AT (80 PREVBOTTOM 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "To Do List:" ID buttonsToDoListLabel AT (PREVLEFT-58 PREVTOP) FONT 1
+
+	FIELD ID buttonsMemoPadCodeField AT (80 PREVBOTTOM 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "Memo Pad:" ID buttonsMemoPadLabel AT (PREVLEFT-60 PREVTOP) FONT 1
+
+
+	FIELD ID buttonsPageUpCodeField AT (80 PREVBOTTOM+3 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "Page Up:" ID buttonsPageUpLabel AT (PREVLEFT-48 PREVTOP) FONT 1
+
+	FIELD ID buttonsPageDnCodeField AT (80 PREVBOTTOM 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "Page Down:" ID buttonsPageDnLabel AT (PREVLEFT-63 PREVTOP) FONT 1
+
+
+	FIELD ID buttonsHotSyncCodeField AT (80 PREVBOTTOM+5 35 AUTO) FONT 0 UNDERLINED MAXCHARS CODE_CHARS_MAX
+	LABEL "HotSync:" ID buttonsHotSyncLabel AT (PREVLEFT-51 PREVTOP) FONT 1
+
+	BUTTON "OK" ID OkBtn AT (10 137 AUTO AUTO ) FONT 2 NONUSABLE
+	BUTTON "Cancel" ID CancelBtn AT (PREVRIGHT+4 PREVTOP AUTO AUTO ) FONT 2
+	GRAFFITISTATEINDICATOR AT (140 PREVTOP+3)
+END
+
+// XXX To add: 
+//	* flow control
+FORM prefsForm 2 22 156 120
+MODAL
+BEGIN
+	TITLE "vt100: comm. settings"
+
+	POPUPTRIGGER "" ID prefsBaud AT (37 16 AUTO AUTO)
+	LABEL "baud" ID prefsBaudLabel AT (PREVRIGHT PREVTOP) FONT 1
+	LIST "1200" "2400" "4800" "9600" "19200" ID prefsBaudList AT (PREVLEFT-30 PREVTOP 40 1 ) NONUSABLE VISIBLEITEMS 5
+        POPUPLIST prefsBaud prefsBaudList
+
+	PUSHBUTTON "5" ID prefsData5 AT (5 PREVBOTTOM-PREVHEIGHT+13 AUTO AUTO) GROUP prefsDataGroup
+	PUSHBUTTON "6" ID prefsData6 AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsDataGroup
+	PUSHBUTTON "7" ID prefsData7 AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsDataGroup
+	PUSHBUTTON "8" ID prefsData8 AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsDataGroup
+	LABEL "data bits" ID prefsDataLabel AT (PREVRIGHT+3 PREVTOP) FONT prefsDataGroup
+
+	PUSHBUTTON "E" ID prefsParityEven AT (15 PREVBOTTOM+3 AUTO AUTO) GROUP prefsParityGroup
+	PUSHBUTTON "O" ID prefsParityOdd AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsParityGroup
+	PUSHBUTTON "N" ID prefsParityNone AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsParityGroup
+	LABEL "parity" ID prefsPatityLabel AT (PREVRIGHT+3 PREVTOP) FONT 1
+
+	PUSHBUTTON "1" ID prefsStop1 AT (29 PREVBOTTOM+3 AUTO AUTO) GROUP prefsStopGroup
+	PUSHBUTTON "2" ID prefsStop2 AT (PREVRIGHT+1 PREVTOP AUTO AUTO) GROUP prefsStopGroup
+	LABEL "stop bits" ID prefsStopLabel AT (PREVRIGHT+3 PREVTOP) FONT 1
+
+	CHECKBOX "local echo" ID prefsLocalEchoCheck AT (38 PREVBOTTOM+1 AUTO AUTO) FONT 1
+	CHECKBOX "I/O resets auto-off" ID prefsResetAutoOffCheck AT (38 PREVBOTTOM+1 AUTO AUTO) FONT 1
+
+	BUTTON "OK" ID OkBtn AT (2 PREVBOTTOM+6 AUTO AUTO) FONT 0
+	BUTTON "Cancel" ID CancelBtn AT (PREVRIGHT+4 PREVTOP AUTO AUTO) FONT 0
+END
+
+FORM infoForm 2 2 156 156
+MODAL
+BEGIN
+	TITLE "About @ICONTEXT@ / @RELEASE@"
+
+	LABEL "Copyright 1997, 1998" ID 0x2002 AT (CENTER 15) FONT 1
+	LABEL "@BRIAN_NAME@" ID 0x2003 AT (CENTER 25) FONT 1
+	LABEL "@BRIAN_MAIL@" ID 0x2004 AT (CENTER 35) FONT 0
+
+	LABEL "vt100 core by Dan Marks" ID 0x2005 AT (CENTER 55) FONT 1
+	LABEL "dmarks@uiuc.edu" ID 0x2007 AT (CENTER 65) FONT 0
+
+	LABEL "many enhancements by" ID 0x2008 AT (CENTER 85) FONT 1
+	LABEL "@VASSILII_NAME@" ID 0x2009 AT (CENTER 95) FONT 1
+	LABEL "@VASSILII_MAIL@" ID 0x2010 AT (CENTER 105) FONT 0
+
+	LABEL "http://vt100.tarunz.org/" ID 0x2011 AT (CENTER 125) FONT 1
+	BUTTON "Ok" ID 0x2020 AT (CENTER 140 AUTO AUTO) FONT 0
+END
+
+ICON "icon.pbm"
+
+// XXX !!! To add: a pulldown for user macros management
+// (Add/Remove/Edit/Run? 
+//	or fix list for, say, 5 macros: 1/2/3/4/5/separator/edit... ??)
+MENU mainMenu
+BEGIN
+	PULLDOWN "Options"
+	BEGIN
+		MENUITEM "Buttons" main_menuButtons "B"
+		MENUITEM "Comm." main_menuComm_prefs "C"
+	END
+	PULLDOWN "Help"
+	BEGIN
+		MENUITEM "About" main_menuAbout "A"
+		MENUITEM "Graffiti" main_menuGraffiti "G"
+	END
+END
+
+BITMAP ID fontBitmap "font.pbm" COMPRESS
+
+VERSION 1 "1.0.0"
+
+STRING hlpButtons "Not implemented!\n"\
+	"Currently hardwired mappings:\n"\
+	"hard1:\t^C\n"\
+	"hard2:\tLeft\n"\
+	"PgUp:\tUp\n"\
+	"PgDown:\tDown\n"\
+	"hard3:\tRight\n"\
+	"hard4:\tEnter\n"\
+	"HotSync:\t^L"

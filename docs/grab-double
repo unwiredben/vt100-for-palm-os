@@ -1,0 +1,3 @@
+#!/bin/sh
+xgrabsc -verbose -key -offset 320x320+69+86 -ppm |\
+	convert -interlace Line -transparency white - gif:-
